@@ -1,19 +1,57 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const value = ref("qwq");
+const list = ref([
+  { isCompleted: false, text: "go shopping" },
+  { isCompleted: true, text: "study" },
+  { isCompleted: false, text: "clean garden" },
+]);
+
+function add() {
+  // Get user input and remove whitespace at the beginning and end
+  const text = value.value.trim();
+
+  // If the input is empty, stop here and do nothing
+  if (!text) return;
+
+  // Add a new todo item to the list
+  list.value.push({
+    isCompleted: false,
+    text,
+  });
+
+  // Clear the input field after adding
+  value.value = "";
+}
+
+function del(index) {
+  // Remove the todo item at the specified index
+  list.value.splice(index, 1);
+}
+
+</script>
 
 <template>
   <div class="todo-app">
     <div class="title">ToDo List</div>
+
     <div class="todo-form">
-      <input type="text" class="todo-input" placeholder="Add a todo" />
-      <div class="todo-button">Add Todo</div>
+      <input
+        v-model="value"
+        type="text"
+        class="todo-input"
+        placeholder="Add a todo"
+      />
+      <div @click="add" class="todo-button">Add Todo</div>
     </div>
 
-    <div class="completed">
+    <div v-for="(item,index) in list" :class="item.isCompleted ? 'completed' : 'item'">
       <div>
-        <input type="checkbox" />
-        <span class="name">Completed</span>
+        <input v-model="item.isCompleted" type="checkbox" />
+        <span class="name">{{ item.text }}</span>
       </div>
-      <div class="del">Delete</div>
+      <div @click="del(index)" class="del">Delete</div>
     </div>
   </div>
 </template>
